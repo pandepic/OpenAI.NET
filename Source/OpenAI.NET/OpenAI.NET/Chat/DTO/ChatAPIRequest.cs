@@ -14,6 +14,7 @@ namespace OpenAINET.Chat.DTO
     {
         public string model { get; set; }
         public List<ChatAPIRequestMessage> messages { get; set; }
+        public bool stream { get; set; }
 
         public ChatAPIRequest() { }
 

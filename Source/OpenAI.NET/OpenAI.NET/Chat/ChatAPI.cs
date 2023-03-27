@@ -8,23 +8,27 @@ namespace OpenAINET.Chat
 {
     public class ChatAPI : BaseOpenAIAPI
     {
-        private List<ChatMessage> _sharedMessageList = new List<ChatMessage>();
-
         public const string API_PATH = "https://api.openai.com/v1/chat/completions";
-
         public static readonly HashSet<OpenAIModelType> SupportedModels = new HashSet<OpenAIModelType>()
         {
             OpenAIModelType.GPT3_5Turbo,
         };
 
-        public ChatAPI(string apiKey) : base(apiKey, API_PATH) { }
+        private List<ChatMessage> _sharedMessageList = new List<ChatMessage>();
 
-        public async Task<List<ChatMessage>> UpdateConversation(ChatConversation conversation, TimeSpan? timeout = null)
+        public readonly ChatConversation Conversation;
+
+        public ChatAPI(string apiKey, ChatConversation conversation) : base(apiKey, API_PATH)
         {
-            if (!SupportedModels.Contains(conversation.ModelType))
-                throw new Exception($"Conversation model type not supported by chat API: {conversation.ModelType}");
+            Conversation = conversation;
+        }
 
-            var request = new ChatAPIRequest(conversation);
+        public async Task<List<ChatMessage>> GetResponse(TimeSpan? timeout = null)
+        {
+            if (!SupportedModels.Contains(Conversation.ModelType))
+                throw new Exception($"Conversation model type not supported by chat API: {Conversation.ModelType}");
+
+            var request = new ChatAPIRequest(Conversation);
 
             var response = await PostRequest<ChatAPIResponse>(API_PATH, request, new Dictionary<string, string>()
             {
@@ -33,7 +37,7 @@ namespace OpenAINET.Chat
             timeout);
 
             var completionTokens = response.usage?.completion_tokens ?? 0;
-            conversation.TotalTokens = response.usage?.total_tokens ?? 0;
+            Conversation.TotalTokens = response.usage?.total_tokens ?? 0;
 
             _sharedMessageList.Clear();
 
@@ -47,7 +51,7 @@ namespace OpenAINET.Chat
                         message.Tokens = completionTokens;
 
                     _sharedMessageList.Add(message);
-                    conversation.Messages.Add(message);
+                    Conversation.Messages.Add(message);
                 }
             }
 

@@ -6,11 +6,12 @@ namespace OpenAINET.Chat.DTO
 {
     public class ChatAPIResponseChoice
     {
+        public ChatAPIRequestMessage delta { get; set; }
         public ChatAPIRequestMessage message { get; set; }
         public string finish_reason { get; set; }
         public int index { get; set; }
     }
-
+    
     public class ChatAPIResponseUsage
     {
         public int prompt_tokens { get; set; }
@@ -26,5 +27,6 @@ namespace OpenAINET.Chat.DTO
         public string model { get; set; }
         public ChatAPIResponseUsage usage { get; set; }
         public List<ChatAPIResponseChoice> choices { get; set; }
+        public APIError error { get; set; }
     }
 }
