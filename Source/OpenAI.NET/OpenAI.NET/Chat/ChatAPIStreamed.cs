@@ -73,7 +73,7 @@ namespace OpenAINET.Chat
                     using var stream = await httpResponse.Content.ReadAsStreamAsync();
                     using var reader = new StreamReader(stream);
 
-                    var totalMessage = "";
+                    var responseMessage = ChatMessage.FromAssistant("");
 
                     while (true)
                     {
@@ -101,7 +101,7 @@ namespace OpenAINET.Chat
                             {
                                 var delta = response.choices[0].delta;
                                 var deltaMessage = delta.content;
-                                totalMessage += deltaMessage;
+                                responseMessage.Message += deltaMessage;
 
                                 OnTokenReceived?.Invoke(deltaMessage);
                             }
@@ -120,10 +120,8 @@ namespace OpenAINET.Chat
                         Thread.Sleep(10);
                     }
 
-                    var completeMessage = ChatMessage.FromSystem(totalMessage);
-
-                    Conversation.AddMessage(completeMessage);
-                    OnMessageComplete?.Invoke(completeMessage);
+                    Conversation.AddMessage(responseMessage);
+                    OnMessageComplete?.Invoke(responseMessage);
                 }
                 catch (Exception ex)
                 {
