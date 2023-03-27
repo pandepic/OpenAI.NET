@@ -1,11 +1,4 @@
-﻿using System;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text.Json.Serialization;
-using System.Text.Json;
-using OpenAINET.Chat;
-using OpenAINET.Chat.DTO;
-using System.Threading;
+﻿using OpenAINET.Chat;
 
 Console.WriteLine("Enter your API key:");
 
@@ -59,8 +52,6 @@ while (true)
         streamedAPI.StartStreamingResponse();
 
         while (streamedAPI.IsStreamingResponse) { }
-
-        Console.WriteLine($"Total tokens: {conversation.TotalTokens}");
         #endregion
     }
     catch (Exception ex)

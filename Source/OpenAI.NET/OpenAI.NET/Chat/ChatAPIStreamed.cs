@@ -103,9 +103,6 @@ namespace OpenAINET.Chat
                                 var deltaMessage = delta.content;
                                 totalMessage += deltaMessage;
 
-                                if (response.usage != null)
-                                    Conversation.TotalTokens = response.usage.total_tokens;
-
                                 OnTokenReceived?.Invoke(deltaMessage);
                             }
                         }
