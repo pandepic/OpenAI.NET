@@ -68,8 +68,8 @@ namespace OpenAINET.Chat
                     httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
                     httpRequest.Content = content;
 
-                    var httpResponse = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
-
+                    using var httpResponse = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+                    
                     using var stream = await httpResponse.Content.ReadAsStreamAsync();
                     using var reader = new StreamReader(stream);
 

@@ -36,6 +36,9 @@ namespace OpenAINET.Chat
             },
             timeout);
 
+            if (response.error != null)
+                throw new Exception($"OpenAI API Error: [Code: {response.error.code ?? ""}] [Type: {response.error.type ?? ""}] [Param: {response.error.param ?? ""}] {response.error.message ?? ""}");
+
             var completionTokens = response.usage?.completion_tokens ?? 0;
             Conversation.TotalTokens = response.usage?.total_tokens ?? 0;
 
