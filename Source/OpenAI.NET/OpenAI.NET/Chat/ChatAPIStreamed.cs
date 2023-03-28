@@ -111,7 +111,7 @@ namespace OpenAINET.Chat
                             line += await reader.ReadToEndAsync();
                             var errorResponse = JsonSerializer.Deserialize<ChatAPIResponse>(line);
 
-                            if (errorResponse.error != null && !string.IsNullOrEmpty(errorResponse.error.message))
+                            if (errorResponse.error != null)
                                 OnError?.Invoke(errorResponse.error);
 
                             break;
