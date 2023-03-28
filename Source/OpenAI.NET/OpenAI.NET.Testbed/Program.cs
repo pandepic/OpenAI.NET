@@ -5,7 +5,11 @@ Console.WriteLine("Enter your API key:");
 
 var apiKey = Console.ReadLine();
 
-var test = new TextStreamedTest(apiKey, OpenAIModelType.TextDavinci003);
+var test = new ChatTest(apiKey, OpenAIModelType.GPT3_5Turbo);
+//var test = new ChatStreamedTest(apiKey, OpenAIModelType.GPT3_5Turbo);
+//var test = new TextTest(apiKey, OpenAIModelType.TextDavinci003);
+//var test = new TextStreamedTest(apiKey, OpenAIModelType.TextDavinci003);
+
 Console.WriteLine($"Test started with model: {test.ModelType}");
 
 while (true)
