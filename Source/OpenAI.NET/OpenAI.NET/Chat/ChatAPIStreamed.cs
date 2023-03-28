@@ -15,6 +15,7 @@ namespace OpenAINET.Chat
     public class ChatAPIStreamed : IDisposable
     {
         protected HttpClient _httpClient;
+        protected StringBuilder _responseString = new StringBuilder();
 
         public readonly string APIKey;
         public readonly ChatConversation Conversation;
@@ -80,7 +81,7 @@ namespace OpenAINET.Chat
                     using var stream = await httpResponse.Content.ReadAsStreamAsync();
                     using var reader = new StreamReader(stream);
 
-                    var responseString = new StringBuilder();
+                    _responseString.Clear();
 
                     while (true)
                     {
@@ -109,7 +110,7 @@ namespace OpenAINET.Chat
                                 var delta = response.choices[0].delta;
                                 var deltaMessage = delta.content;
 
-                                responseString.Append(deltaMessage);
+                                _responseString.Append(deltaMessage);
                                 OnTokenReceived?.Invoke(deltaMessage);
                             }
                         }
@@ -127,7 +128,7 @@ namespace OpenAINET.Chat
                         Thread.Sleep(10);
                     }
 
-                    var responseMessage = ChatMessage.FromAssistant(responseString.ToString());
+                    var responseMessage = ChatMessage.FromAssistant(_responseString.ToString());
 
                     Conversation.AddMessage(responseMessage);
                     OnMessageComplete?.Invoke(responseMessage);

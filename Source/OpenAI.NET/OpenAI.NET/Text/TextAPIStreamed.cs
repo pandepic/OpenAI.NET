@@ -17,6 +17,7 @@ namespace OpenAINET.Text
     public class TextAPIStreamed : IDisposable
     {
         protected HttpClient _httpClient;
+        protected StringBuilder _responseString = new StringBuilder();
 
         public readonly OpenAIModel Model;
         public readonly string APIKey;
@@ -97,7 +98,7 @@ namespace OpenAINET.Text
                     using var stream = await httpResponse.Content.ReadAsStreamAsync();
                     using var reader = new StreamReader(stream);
 
-                    var responseMessage = new StringBuilder();
+                    _responseString.Clear();
 
                     while (true)
                     {
@@ -124,7 +125,7 @@ namespace OpenAINET.Text
                             {
                                 foreach (var choice in response.choices)
                                 {
-                                    responseMessage.Append(choice.text);
+                                    _responseString.Append(choice.text);
                                     OnTokenReceived?.Invoke(choice.text);
                                 }
                             }
@@ -143,7 +144,7 @@ namespace OpenAINET.Text
                         Thread.Sleep(10);
                     }
 
-                    OnResponseComplete?.Invoke(responseMessage.ToString());
+                    OnResponseComplete?.Invoke(_responseString.ToString());
                 }
                 catch (Exception ex)
                 {
