@@ -12,6 +12,8 @@ namespace OpenAINET.Chat
         public static readonly HashSet<OpenAIModelType> SupportedModels = new HashSet<OpenAIModelType>()
         {
             OpenAIModelType.GPT3_5Turbo,
+            OpenAIModelType.GPT4_8k,
+            OpenAIModelType.GPT4_32k,
         };
 
         private List<ChatMessage> _sharedMessageList = new List<ChatMessage>();

@@ -8,6 +8,8 @@ namespace OpenAINET
     {
         GPT3_5Turbo,
         TextDavinci003,
+        GPT4_8k,
+        GPT4_32k,
     }
 
     public class OpenAIModel
@@ -34,6 +36,24 @@ namespace OpenAINET
                     ModelType = OpenAIModelType.TextDavinci003,
                     ModelString = "text-davinci-003",
                     MaxTokens = 4096,
+                }
+            },
+            {
+                OpenAIModelType.GPT4_8k,
+                new OpenAIModel()
+                {
+                    ModelType = OpenAIModelType.GPT4_8k,
+                    ModelString = "gpt-4",
+                    MaxTokens = 8000,
+                }
+            },
+            {
+                OpenAIModelType.GPT4_32k,
+                new OpenAIModel()
+                {
+                    ModelType = OpenAIModelType.GPT4_32k,
+                    ModelString = "gpt-4",
+                    MaxTokens = 32000,
                 }
             }
         };

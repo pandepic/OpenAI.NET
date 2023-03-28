@@ -3,33 +3,35 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
+using OpenAINET.Chat;
 using OpenAINET.Chat.DTO;
+using OpenAINET.Text.DTO;
+using System.Threading;
+using System.Text;
 
-namespace OpenAINET.Chat
+namespace OpenAINET.Text
 {
-    public class ChatAPIStreamed : IDisposable
+    public class TextAPIStreamed : IDisposable
     {
         protected HttpClient _httpClient;
 
+        public readonly OpenAIModel Model;
         public readonly string APIKey;
-        public readonly ChatConversation Conversation;
 
         public event Action<string> OnTokenReceived;
         public event Action<APIError> OnError;
-        public event Action<ChatMessage> OnMessageComplete;
+        public event Action<string> OnResponseComplete;
         public event Action<Exception> OnException;
 
         public bool IsStreamingResponse { get; protected set; }
 
-        public ChatAPIStreamed(string apiKey, ChatConversation conversation)
+        public TextAPIStreamed(OpenAIModelType modelType, string apiKey)
         {
+            Model = OpenAIModel.Models[modelType];
             APIKey = apiKey;
-            Conversation = conversation;
 
             _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
@@ -41,19 +43,37 @@ namespace OpenAINET.Chat
             _httpClient = null;
         }
 
+        public void StartStreamingResponse(string prompt, float temperature = 1f, int? maxTokens = null)
+        {
+            StartStreamingResponse(new string[] { prompt }, temperature, maxTokens);
+        }
+
+        public void StartStreamingResponse(string[] prompt, float temperature = 1f, int? maxTokens = null)
+        {
+            var useMaxTokens = maxTokens ?? Model.MaxTokens;
+
+            var request = new TextAPIRequest()
+            {
+                model = Model.ModelString,
+                prompt = prompt,
+                max_tokens = useMaxTokens,
+                temperature = temperature,
+                stream = true,
+            };
+
+            StartStreamingResponse(request);
+        }
+
         public void WaitForResponse()
         {
             while (IsStreamingResponse)
                 Thread.Sleep(10);
         }
 
-        public void StartStreamingResponse()
+        public void StartStreamingResponse(TextAPIRequest request)
         {
             if (IsStreamingResponse)
                 throw new Exception("Already streaming a response.");
-
-            if (!ChatAPI.SupportedModels.Contains(Conversation.ModelType))
-                throw new Exception($"Conversation model type not supported by chat API: {Conversation.ModelType}");
 
             IsStreamingResponse = true;
 
@@ -61,26 +81,23 @@ namespace OpenAINET.Chat
             {
                 try
                 {
-                    var request = new ChatAPIRequest(Conversation)
-                    {
-                        stream = true,
-                    };
+                    request.stream = true;
 
                     var content = JsonContent.Create(request, null, new JsonSerializerOptions
                     {
                         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
                     });
 
-                    using var httpRequest = new HttpRequestMessage(HttpMethod.Post, ChatAPI.API_PATH);
+                    using var httpRequest = new HttpRequestMessage(HttpMethod.Post, TextAPI.API_PATH);
                     httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
                     httpRequest.Content = content;
 
                     using var httpResponse = await _httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
-                    
+
                     using var stream = await httpResponse.Content.ReadAsStreamAsync();
                     using var reader = new StreamReader(stream);
 
-                    var responseString = new StringBuilder();
+                    var responseMessage = new StringBuilder();
 
                     while (true)
                     {
@@ -100,17 +117,16 @@ namespace OpenAINET.Chat
 
                         try
                         {
-                            var response = JsonSerializer.Deserialize<ChatAPIResponse>(line);
+                            var response = JsonSerializer.Deserialize<TextAPIResponse>(line);
 
                             if (response.choices != null
-                                && response.choices.Count > 0
-                                && response.choices[0].delta != null)
+                                && response.choices.Count > 0)
                             {
-                                var delta = response.choices[0].delta;
-                                var deltaMessage = delta.content;
-
-                                responseString.Append(deltaMessage);
-                                OnTokenReceived?.Invoke(deltaMessage);
+                                foreach (var choice in response.choices)
+                                {
+                                    responseMessage.Append(choice.text);
+                                    OnTokenReceived?.Invoke(choice.text);
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -127,10 +143,7 @@ namespace OpenAINET.Chat
                         Thread.Sleep(10);
                     }
 
-                    var responseMessage = ChatMessage.FromAssistant(responseString.ToString());
-
-                    Conversation.AddMessage(responseMessage);
-                    OnMessageComplete?.Invoke(responseMessage);
+                    OnResponseComplete?.Invoke(responseMessage.ToString());
                 }
                 catch (Exception ex)
                 {

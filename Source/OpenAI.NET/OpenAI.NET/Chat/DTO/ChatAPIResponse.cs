@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace OpenAINET.Chat.DTO
 {
@@ -9,9 +7,9 @@ namespace OpenAINET.Chat.DTO
         public ChatAPIRequestMessage delta { get; set; }
         public ChatAPIRequestMessage message { get; set; }
         public string finish_reason { get; set; }
-        public int index { get; set; }
+        public int? index { get; set; }
     }
-    
+
     public class ChatAPIResponseUsage
     {
         public int prompt_tokens { get; set; }
@@ -23,7 +21,7 @@ namespace OpenAINET.Chat.DTO
     {
         public string id { get; set; }
         public string @object { get; set; }
-        public int created { get; set; }
+        public long created { get; set; }
         public string model { get; set; }
         public ChatAPIResponseUsage usage { get; set; }
         public List<ChatAPIResponseChoice> choices { get; set; }
