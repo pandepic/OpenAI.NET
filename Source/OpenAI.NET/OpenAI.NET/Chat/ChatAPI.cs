@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAINET.Chat.DTO;
 
@@ -20,17 +21,22 @@ namespace OpenAINET.Chat
 
         public readonly ChatConversation Conversation;
 
+        public ChatAPI(string apiKey) : base(apiKey, API_PATH) { }
+
         public ChatAPI(string apiKey, ChatConversation conversation) : base(apiKey, API_PATH)
         {
+            if (!SupportedModels.Contains(conversation.ModelType))
+                throw new Exception($"Conversation model type not supported by chat API: {conversation.ModelType}");
+
             Conversation = conversation;
         }
 
-        public async Task<List<ChatMessage>> GetResponse(TimeSpan? timeout = null)
+        public async Task<List<ChatMessage>> GetResponse(float? temperature = null, TimeSpan? timeout = null)
         {
-            if (!SupportedModels.Contains(Conversation.ModelType))
-                throw new Exception($"Conversation model type not supported by chat API: {Conversation.ModelType}");
-
             var request = new ChatAPIRequest(Conversation);
+
+            if (temperature.HasValue)
+                request.temperature = temperature.Value;
 
             var response = await PostRequest<ChatAPIResponse>(API_PATH, request, new Dictionary<string, string>()
             {
@@ -61,6 +67,17 @@ namespace OpenAINET.Chat
             }
 
             return _sharedMessageList;
+        }
+
+        public async Task<ChatAPIResponse> GetRawResponse(ChatAPIRequest request, TimeSpan? timeout = null)
+        {
+            var response = await PostRequest<ChatAPIResponse>(API_PATH, request, new Dictionary<string, string>()
+            {
+                { "Authorization", $"Bearer {APIKey}" },
+            },
+            timeout);
+
+            return response;
         }
     }
 }

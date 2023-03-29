@@ -18,7 +18,7 @@ namespace OpenAINET.Text.DTO
         public float presence_penalty { get; set; }
         public float frequency_penalty { get; set; }
         public int best_of { get; set; } = 1;
-        //public object logit_bias { get; set; } = null;
+        //public Dictionary<int, int> logit_bias { get; set; }
         //public string user { get; set; }
     }
 }
