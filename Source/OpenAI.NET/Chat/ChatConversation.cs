@@ -17,5 +17,10 @@ namespace OpenAINET.Chat
         {
             Messages.Add(message);
         }
+
+        public OpenAIModel GetModel()
+        {
+            return OpenAIModel.Models[ModelType];
+        }
     }
 }

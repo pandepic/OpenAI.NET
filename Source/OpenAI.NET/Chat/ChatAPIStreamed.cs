@@ -48,7 +48,7 @@ namespace OpenAINET.Chat
                 Thread.Sleep(10);
         }
 
-        public void StartStreamingResponse()
+        public void StartStreamingResponse(float? temperature = null)
         {
             if (IsStreamingResponse)
                 throw new Exception("Already streaming a response.");
@@ -66,6 +66,9 @@ namespace OpenAINET.Chat
                     {
                         stream = true,
                     };
+
+                    if (temperature.HasValue)
+                        request.temperature = temperature.Value;
 
                     var content = JsonContent.Create(request, null, new JsonSerializerOptions
                     {

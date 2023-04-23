@@ -10,5 +10,10 @@ namespace OpenAINET
         public string type { get; set; }
         public string param { get; set; }
         public string code { get; set; }
+
+        public override string ToString()
+        {
+            return $"[Type: {type}] [Param: {param}] [Code: {code}]: {message}";
+        }
     }
 }

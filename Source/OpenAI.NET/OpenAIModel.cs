@@ -44,7 +44,7 @@ namespace OpenAINET
                 {
                     ModelType = OpenAIModelType.GPT4_8k,
                     ModelString = "gpt-4",
-                    MaxTokens = 8000,
+                    MaxTokens = 8192,
                 }
             },
             {
@@ -53,7 +53,7 @@ namespace OpenAINET
                 {
                     ModelType = OpenAIModelType.GPT4_32k,
                     ModelString = "gpt-4",
-                    MaxTokens = 32000,
+                    MaxTokens = 32768,
                 }
             }
         };
