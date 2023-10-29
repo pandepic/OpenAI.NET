@@ -18,7 +18,7 @@ namespace OpenAINET.Testbed
             if (!string.IsNullOrEmpty(input))
                 History.AppendLine(input);
 
-            var (responses, promptTokens, responseTokens, totalTokens) = await TextAPI.GetResponse(History.ToString(), maxTokens: 1000);
+            var (responses, promptTokens, responseTokens, totalTokens) = await TextAPI.GetResponseAsync(History.ToString(), maxTokens: 1000);
 
             foreach (var response in responses)
             {

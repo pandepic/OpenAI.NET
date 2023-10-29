@@ -9,7 +9,10 @@ namespace OpenAINET
 {
     public class BaseHTTPAPI
     {
-        protected async Task<T> GetRequest<T>(string path, Dictionary<string, string> headers = null, TimeSpan? timeout = null)
+        protected async Task<T> GetRequestAsync<T>(
+            string path,
+            Dictionary<string, string> headers = null,
+            TimeSpan? timeout = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, path);
 
@@ -19,10 +22,14 @@ namespace OpenAINET
                     request.Headers.Add(header.Key, header.Value);
             }
 
-            return await SendRequest<T>(request, timeout);
+            return await SendRequestAsync<T>(request, timeout);
         }
 
-        protected async Task<T> PostRequest<T>(string path, object parameters, Dictionary<string, string> headers = null, TimeSpan? timeout = null)
+        protected async Task<T> PostRequestAsync<T>(
+            string path,
+            object parameters,
+            Dictionary<string, string> headers = null,
+            TimeSpan? timeout = null)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, path);
 
@@ -33,12 +40,17 @@ namespace OpenAINET
             }
 
             request.Headers.Add("accept", "application/json");
-            request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+            request.Content = new StringContent(
+                JsonConvert.SerializeObject(parameters),
+                Encoding.UTF8, 
+                "application/json");
 
-            return await SendRequest<T>(request, timeout);
+            return await SendRequestAsync<T>(request, timeout);
         }
 
-        protected async Task<T> SendRequest<T>(HttpRequestMessage request, TimeSpan? timeout = null)
+        protected async Task<T> SendRequestAsync<T>(
+            HttpRequestMessage request,
+            TimeSpan? timeout = null)
         {
             using var client = new HttpClient();
 
@@ -54,7 +66,10 @@ namespace OpenAINET
                     return JsonConvert.DeserializeObject<T>(content);
 
                 default:
-                    throw new Exception("API Request Error - " + ((int)response.StatusCode).ToString() + " - " + request.RequestUri.ToString() + ": " + content);
+                    throw new Exception("API Request Error - "
+                                        + ((int)response.StatusCode).ToString()
+                                        + " - " + request.RequestUri.ToString()
+                                        + ": " + content);
             }
         }
     }

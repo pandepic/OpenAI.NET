@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using OpenAINET.Chat.DTO;
-using System.Threading;
 using OpenAINET.Text.DTO;
 using System;
 using System.Threading.Tasks;
@@ -13,17 +11,25 @@ namespace OpenAINET.Text
 
         public readonly OpenAIModel Model;
 
-        public TextAPI(OpenAIModelType modelType, string apiKey) : base(apiKey, API_PATH)
+        public TextAPI(OpenAIModelType modelType, string apiKey) : base(apiKey)
         {
             Model = OpenAIModel.Models[modelType];
         }
 
-        public async Task<(List<string> Responses, int PromptTokens, int ResponseTokens, int TotalTokens)> GetResponse(string prompt, float temperature = 1f, int? maxTokens = null, TimeSpan? timeout = null)
+        public async Task<(List<string> Responses, int PromptTokens, int ResponseTokens, int TotalTokens)> GetResponseAsync(
+            string prompt,
+            float temperature = 1f,
+            int? maxTokens = null,
+            TimeSpan? timeout = null)
         {
-            return await GetResponse(new string[] { prompt }, temperature, maxTokens, timeout);
+            return await GetResponseAsync(new string[] { prompt }, temperature, maxTokens, timeout);
         }
 
-        public async Task<(List<string> Responses, int PromptTokens, int ResponseTokens, int TotalTokens)> GetResponse(string[] prompt, float temperature = 1f, int? maxTokens = null, TimeSpan? timeout = null)
+        public async Task<(List<string> Responses, int PromptTokens, int ResponseTokens, int TotalTokens)> GetResponseAsync(
+            string[] prompt,
+            float temperature = 1f,
+            int? maxTokens = null,
+            TimeSpan? timeout = null)
         {
             var useMaxTokens = maxTokens ?? Model.MaxTokens;
 
@@ -35,7 +41,7 @@ namespace OpenAINET.Text
                 temperature = temperature,
             };
 
-            var response = await PostRequest<TextAPIResponse>(API_PATH, request, new Dictionary<string, string>()
+            var response = await PostRequestAsync<TextAPIResponse>(API_PATH, request, new Dictionary<string, string>()
             {
                 { "Authorization", $"Bearer {APIKey}" },
             },
@@ -70,9 +76,11 @@ namespace OpenAINET.Text
             return (responses, promptTokens, responseTokens, totalTokens);
         }
         
-        public async Task<TextAPIResponse> GetRawResponse(TextAPIResponse request, TimeSpan? timeout = null)
+        public async Task<TextAPIResponse> GetRawResponseAsync(
+            TextAPIResponse request,
+            TimeSpan? timeout = null)
         {
-            var response = await PostRequest<TextAPIResponse>(API_PATH, request, new Dictionary<string, string>()
+            var response = await PostRequestAsync<TextAPIResponse>(API_PATH, request, new Dictionary<string, string>()
             {
                 { "Authorization", $"Bearer {APIKey}" },
             },

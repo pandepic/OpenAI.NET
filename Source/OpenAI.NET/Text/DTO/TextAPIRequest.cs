@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OpenAINET.Text.DTO
+﻿namespace OpenAINET.Text.DTO
 {
     public class TextAPIRequest
     {

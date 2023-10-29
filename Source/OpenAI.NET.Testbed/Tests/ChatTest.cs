@@ -18,7 +18,7 @@ namespace OpenAINET.Testbed
             if (!string.IsNullOrWhiteSpace(input))
                 Conversation.AddMessage(ChatMessage.FromUser(input));
 
-            var newMessages = await ChatAPI.GetResponse();
+            var newMessages = await ChatAPI.GetResponseAsync();
 
             foreach (var newMessage in newMessages)
                 Console.WriteLine($"{newMessage.Role}: {newMessage.Message}");

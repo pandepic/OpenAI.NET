@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OpenAINET
+﻿namespace OpenAINET
 {
     public abstract class BaseOpenAIAPI : BaseHTTPAPI
     {
-        public readonly string APIPath;
         public readonly string APIKey;
 
-        public BaseOpenAIAPI(string apiKey, string apiPath)
+        public BaseOpenAIAPI(string apiKey)
         {
             APIKey = apiKey;
-            APIPath = apiPath;
         }
     }
 }

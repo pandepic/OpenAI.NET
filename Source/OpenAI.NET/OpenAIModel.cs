@@ -11,6 +11,7 @@ namespace OpenAINET
         TextDavinci003,
         GPT4_8k,
         GPT4_32k,
+        TextEmbeddingAda002,
     }
 
     public class OpenAIModel
@@ -76,6 +77,17 @@ namespace OpenAINET
                     MaxTokens = 32768,
                     InputPricePer1kTokens = 0.06m,
                     OutputPricePer1kTokens = 0.12m,
+                }
+            },
+            {
+                OpenAIModelType.TextEmbeddingAda002,
+                new OpenAIModel()
+                {
+                    ModelType = OpenAIModelType.TextEmbeddingAda002,
+                    ModelString = "text-embedding-ada-002",
+                    MaxTokens = 32768,
+                    InputPricePer1kTokens = 0.0001m,
+                    OutputPricePer1kTokens = 0.0001m,
                 }
             }
         };
