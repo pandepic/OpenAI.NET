@@ -7,11 +7,13 @@ namespace OpenAINET
     public enum OpenAIModelType
     {
         GPT3_5Turbo,
-        GPT3_5Turbo16k,
+        GPT3_5Turbo_Instruct,
         TextDavinci003,
         GPT4_8k,
         GPT4_32k,
         TextEmbeddingAda002,
+        GPT4_Turbo,
+        GPT4_Turbo_Vision,
     }
 
     public class OpenAIModel
@@ -29,21 +31,21 @@ namespace OpenAINET
                 new OpenAIModel()
                 {
                     ModelType = OpenAIModelType.GPT3_5Turbo,
-                    ModelString = "gpt-3.5-turbo",
-                    MaxTokens = 4096,
-                    InputPricePer1kTokens = 0.0015m,
+                    ModelString = "gpt-3.5-turbo-1106",
+                    MaxTokens = 16385,
+                    InputPricePer1kTokens = 0.001m,
                     OutputPricePer1kTokens = 0.002m,
                 }
             },
             {
-                OpenAIModelType.GPT3_5Turbo16k,
+                OpenAIModelType.GPT3_5Turbo_Instruct,
                 new OpenAIModel()
                 {
-                    ModelType = OpenAIModelType.GPT3_5Turbo16k,
-                    ModelString = "gpt-3.5-turbo-16k",
-                    MaxTokens = 16384,
-                    InputPricePer1kTokens = 0.003m,
-                    OutputPricePer1kTokens = 0.004m,
+                    ModelType = OpenAIModelType.GPT3_5Turbo_Instruct,
+                    ModelString = "gpt-3.5-turbo-instruct",
+                    MaxTokens = 4096,
+                    InputPricePer1kTokens = 0.0015m,
+                    OutputPricePer1kTokens = 0.002m,
                 }
             },
             {
@@ -73,7 +75,7 @@ namespace OpenAINET
                 new OpenAIModel()
                 {
                     ModelType = OpenAIModelType.GPT4_32k,
-                    ModelString = "gpt-4",
+                    ModelString = "gpt-4-32k",
                     MaxTokens = 32768,
                     InputPricePer1kTokens = 0.06m,
                     OutputPricePer1kTokens = 0.12m,
@@ -89,7 +91,29 @@ namespace OpenAINET
                     InputPricePer1kTokens = 0.0001m,
                     OutputPricePer1kTokens = 0.0001m,
                 }
-            }
+            },
+            {
+                OpenAIModelType.GPT4_Turbo,
+                new OpenAIModel()
+                {
+                    ModelType = OpenAIModelType.GPT4_Turbo,
+                    ModelString = "gpt-4-1106-preview",
+                    MaxTokens = 128000,
+                    InputPricePer1kTokens = 0.01m,
+                    OutputPricePer1kTokens = 0.03m,
+                }
+            },
+            {
+                OpenAIModelType.GPT4_Turbo_Vision,
+                new OpenAIModel()
+                {
+                    ModelType = OpenAIModelType.GPT4_Turbo_Vision,
+                    ModelString = "gpt-4-vision-preview",
+                    MaxTokens = 128000,
+                    InputPricePer1kTokens = 0.01m,
+                    OutputPricePer1kTokens = 0.03m,
+                }
+            },
         };
     }
 }
