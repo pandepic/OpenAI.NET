@@ -2,10 +2,21 @@
 
 namespace OpenAINET.Chat.DTO
 {
+    public class ChatAPIResponseDelta
+    {
+        public string content { get; set; }
+    }
+
+    public class ChatAPIResponseMessage
+    {
+        public string role { get; set; }
+        public string content { get; set; }
+    }
+    
     public class ChatAPIResponseChoice
     {
-        public ChatAPIRequestMessage delta { get; set; }
-        public ChatAPIRequestMessage message { get; set; }
+        public ChatAPIResponseDelta delta { get; set; }
+        public ChatAPIResponseMessage message { get; set; }
         public string finish_reason { get; set; }
         public int? index { get; set; }
     }

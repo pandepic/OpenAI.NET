@@ -9,8 +9,8 @@ namespace OpenAINET.Testbed
 
         public ChatTest(string apiKey, OpenAIModelType modelType) : base(apiKey, modelType)
         {
-            Conversation = new(ModelType);
-            ChatAPI = new(APIKey, Conversation);
+            ChatAPI = new(APIKey);
+            Conversation = new(ChatAPI, ModelType);
         }
 
         public override async Task AddUserInput(string input)
@@ -18,10 +18,10 @@ namespace OpenAINET.Testbed
             if (!string.IsNullOrWhiteSpace(input))
                 Conversation.AddMessage(ChatMessage.FromUser(input));
 
-            var newMessages = await ChatAPI.GetResponseAsync();
+            var message = await Conversation.GetNextAssistantMessageAsync();
 
-            foreach (var newMessage in newMessages)
-                Console.WriteLine($"{newMessage.Role}: {newMessage.Message}");
+            if (message != null && message is ChatMessageAssistant messageAssistant)
+                Console.WriteLine($"{messageAssistant.Role}: {messageAssistant.Content}");
 
             Console.WriteLine($"Total tokens: {Conversation.TotalTokens}");
         }

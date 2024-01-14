@@ -1,7 +1,6 @@
-﻿namespace OpenAINET.Moderation.DTO
+﻿namespace OpenAINET.Moderation.DTO;
+
+public class ModerationAPIRequest
 {
-    public class ModerationAPIRequest
-    {
-        public string input { get; set; }
-    }
+    public string input { get; set; }
 }
