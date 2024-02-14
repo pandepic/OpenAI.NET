@@ -12,7 +12,7 @@ public class ChatConversation
     public ChatAPI ChatAPI { get; protected set; }
 
     public OpenAIModelType ModelType { get; protected set; }
-    public List<ChatMessage> Messages { get; set; } = new List<ChatMessage>();
+    public List<ChatMessage> Messages { get; set; } = new();
     public int? TotalTokens { get; set; }
 
     public float Temperature { get; protected set; } = 1f;

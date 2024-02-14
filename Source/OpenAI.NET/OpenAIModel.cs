@@ -22,7 +22,7 @@ public class OpenAIModel
     public decimal InputPricePer1kTokens;
     public decimal OutputPricePer1kTokens;
 
-    public static readonly Dictionary<OpenAIModelType, OpenAIModel> Models = new Dictionary<OpenAIModelType, OpenAIModel>()
+    public static readonly Dictionary<OpenAIModelType, OpenAIModel> Models = new()
     {
         {
             OpenAIModelType.GPT3_5Turbo,

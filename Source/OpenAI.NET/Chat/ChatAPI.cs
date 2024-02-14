@@ -10,7 +10,7 @@ public class ChatAPI : BaseOpenAIAPI
 {
     public const string API_PATH = "https://api.openai.com/v1/chat/completions";
 
-    public static readonly HashSet<OpenAIModelType> SupportedModels = new HashSet<OpenAIModelType>()
+    public static readonly HashSet<OpenAIModelType> SupportedModels = new()
     {
         OpenAIModelType.GPT3_5Turbo,
         OpenAIModelType.GPT4_8k,
