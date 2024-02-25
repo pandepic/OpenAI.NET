@@ -21,6 +21,10 @@ public class OpenAIModel
     public int MaxTokens;
     public decimal InputPricePer1kTokens;
     public decimal OutputPricePer1kTokens;
+    public int? ResponseTokensPadding;
+    public int? TokensPerMessage;
+    public decimal? NameTokensMultiplier;
+    public int? TokensPerName;
 
     public static readonly Dictionary<OpenAIModelType, OpenAIModel> Models = new()
     {
@@ -33,6 +37,10 @@ public class OpenAIModel
                 MaxTokens = 16385,
                 InputPricePer1kTokens = 0.001m,
                 OutputPricePer1kTokens = 0.002m,
+                ResponseTokensPadding = 3,
+                TokensPerMessage = 4,
+                NameTokensMultiplier = 1,
+                TokensPerName = 1,
             }
         },
         {
@@ -66,6 +74,10 @@ public class OpenAIModel
                 MaxTokens = 8192,
                 InputPricePer1kTokens = 0.03m,
                 OutputPricePer1kTokens = 0.06m,
+                ResponseTokensPadding = 3,
+                TokensPerMessage = 4,
+                NameTokensMultiplier = 1,
+                TokensPerName = 1,
             }
         },
         {
@@ -77,6 +89,10 @@ public class OpenAIModel
                 MaxTokens = 32768,
                 InputPricePer1kTokens = 0.06m,
                 OutputPricePer1kTokens = 0.12m,
+                ResponseTokensPadding = 3,
+                TokensPerMessage = 4,
+                NameTokensMultiplier = 1,
+                TokensPerName = 1,
             }
         },
         {
@@ -99,6 +115,10 @@ public class OpenAIModel
                 MaxTokens = 128000,
                 InputPricePer1kTokens = 0.01m,
                 OutputPricePer1kTokens = 0.03m,
+                ResponseTokensPadding = 3,
+                TokensPerMessage = 4,
+                NameTokensMultiplier = 1,
+                TokensPerName = 1,
             }
         },
         {
@@ -110,6 +130,10 @@ public class OpenAIModel
                 MaxTokens = 128000,
                 InputPricePer1kTokens = 0.01m,
                 OutputPricePer1kTokens = 0.03m,
+                ResponseTokensPadding = 3,
+                TokensPerMessage = 4,
+                NameTokensMultiplier = 1,
+                TokensPerName = 1,
             }
         },
     };

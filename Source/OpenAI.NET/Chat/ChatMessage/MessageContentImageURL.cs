@@ -9,12 +9,17 @@ public class MessageContentImageURL : MessageContentImage
     public MessageContentImageURL() { }
 
     public MessageContentImageURL(string imageURL,
-        MessageContentImageDetail detail = MessageContentImageDetail.Low)
+        MessageContentImageDetail detail = MessageContentImageDetail.Low,
+        int width = 0,
+        int height = 0)
     {
         ImageURL = imageURL;
         Detail = detail;
+        
+        Width = width;
+        Height = height;
     }
-
+    
     public override ChatAPIRequestContent CreateAPIRequestContent()
     {
         return new ChatAPIRequestImageContent()

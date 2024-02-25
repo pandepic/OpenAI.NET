@@ -7,14 +7,25 @@ using OpenAINET.Chat.DTO;
 
 namespace OpenAINET.Chat;
 
+public class ChatResponseUsage
+{
+    public int PromptTokens { get; set; }
+    public int ResponseTokens { get; set; }
+    public decimal PromptCost { get; set; }
+    public decimal ResponseCost { get; set; }
+}
+
 public class ChatConversation
 {
     public ChatAPI ChatAPI { get; protected set; }
 
     public OpenAIModelType ModelType { get; protected set; }
     public List<ChatMessage> Messages { get; set; } = new();
+    public int? TotalInputTokens { get; set; }
+    public int? TotalOutputTokens { get; set; }
     public int? TotalTokens { get; set; }
-
+    public decimal TotalEstimatedCost { get; set; }
+    
     public float Temperature { get; protected set; } = 1f;
     public float TopP { get; protected set; } = 1f;
 
@@ -53,6 +64,36 @@ public class ChatConversation
         TopP = topP;
     }
 
+    public int GetTotalPromptTokens()
+    {
+        var model = GetModel();
+        var encoding = SharpToken.GptEncoding.GetEncodingForModel(model.ModelString);
+
+        var tokens = 0;
+
+        foreach (var message in Messages)
+        {
+            tokens += message.GetTokenCount(encoding);
+            tokens += model.TokensPerMessage ?? 0;
+
+            if (!string.IsNullOrEmpty(message.Name))
+            {
+                if (model.NameTokensMultiplier.HasValue)
+                {
+                    var nameTokens = encoding.Encode(message.Name).Count;
+                    tokens += (int)(nameTokens * model.NameTokensMultiplier.Value);
+                }
+
+                if (model.TokensPerName.HasValue)
+                    tokens += model.TokensPerName.Value;
+            }
+        }
+
+        tokens += model.ResponseTokensPadding ?? 0;
+
+        return tokens;
+    }
+
     public ChatAPIRequest CreateAPIRequest(int? maxTokens = null)
     {
         var request = new ChatAPIRequest()
@@ -70,7 +111,7 @@ public class ChatConversation
         return request;
     }
 
-    public async Task<ChatMessage> GetNextAssistantMessageAsync(
+    public async Task<(ChatMessage, ChatResponseUsage)> GetNextAssistantMessageAsync(
         int? maxTokens = null,
         TimeSpan? timeout = null)
     {
@@ -78,6 +119,7 @@ public class ChatConversation
         var jsonFormatting = Formatting.None;
 
         ChatMessage message = null;
+        ChatResponseUsage usage = null;
 
 #if DEBUG
         jsonFormatting = Formatting.Indented;
@@ -114,12 +156,23 @@ public class ChatConversation
 
                 message.EstimatedCost = promptCost + responseCost;
                 message.Tokens = response.usage.completion_tokens;
+
+                TotalInputTokens += response.usage.prompt_tokens;
+                TotalOutputTokens += response.usage.completion_tokens;
+
+                TotalEstimatedCost += promptCost + responseCost;
+                TotalTokens = response.usage.total_tokens;
+                
+                usage = new ChatResponseUsage
+                {
+                    PromptTokens = response.usage.prompt_tokens,
+                    ResponseTokens = response.usage.completion_tokens,
+                    PromptCost = promptCost,
+                    ResponseCost = responseCost,
+                };
             }
         }
 
-        if (response.usage != null)
-            TotalTokens = response.usage.total_tokens;
-
-        return message;
+        return (message, usage);
     }
 }

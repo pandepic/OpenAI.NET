@@ -10,10 +10,15 @@ public class MessageContentImageBytes : MessageContentImage
     public MessageContentImageBytes() { }
 
     public MessageContentImageBytes(byte[] bytes,
-        MessageContentImageDetail detail = MessageContentImageDetail.Low)
+        MessageContentImageDetail detail = MessageContentImageDetail.Low,
+        int width = 0,
+        int height = 0)
     {
         Bytes = bytes;
         Detail = detail;
+
+        Width = width;
+        Height = height;
     }
 
     public override ChatAPIRequestContent CreateAPIRequestContent()

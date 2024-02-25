@@ -9,14 +9,29 @@ public class ChatMessageUser : ChatMessage
 
     public ChatMessageUser() : base(ChatMessageRole.User) { }
 
-    public ChatMessageUser(string content) : base(ChatMessageRole.User)
+    public ChatMessageUser(string content, string name = null) : base(ChatMessageRole.User)
     {
+        Name = name;
         Content = new() { new MessageContentText(content) };
     }
 
-    public ChatMessageUser(List<MessageContent> content) : base(ChatMessageRole.User)
+    public ChatMessageUser(List<MessageContent> content, string name = null) : base(ChatMessageRole.User)
     {
+        Name = name;
         Content = content;
+    }
+
+    public override int GetTokenCount(SharpToken.GptEncoding encoding)
+    {
+        if (Content == null || Content.Count == 0)
+            return 0;
+        
+        var contentTokens = 0;
+
+        foreach (var content in Content)
+            contentTokens += content.GetTokenCount(encoding);
+        
+        return contentTokens;
     }
 
     public override BaseChatAPIRequestMessage CreateAPIRequestMessage()
@@ -25,6 +40,7 @@ public class ChatMessageUser : ChatMessage
         {
             role = GetRoleString(),
             content = new(),
+            name = Name,
         };
 
         foreach (var item in Content)

@@ -12,6 +12,14 @@ public class MessageContentText : MessageContent
     {
         Text = text;
     }
+    
+    public override int GetTokenCount(SharpToken.GptEncoding encoding)
+    {
+        if (string.IsNullOrEmpty(Text))
+            return 0;
+        
+        return encoding.Encode(Text).Count;
+    }
 
     public override ChatAPIRequestContent CreateAPIRequestContent()
     {

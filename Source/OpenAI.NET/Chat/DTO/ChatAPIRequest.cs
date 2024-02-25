@@ -17,6 +17,7 @@ public enum ChatAPIRequestImageContentDetailType
 public abstract class BaseChatAPIRequestMessage
 {
     public string role { get; set; }
+    public string? name { get; set; }
 }
 
 public class ChatAPIRequestMessageBasic : BaseChatAPIRequestMessage
