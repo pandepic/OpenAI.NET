@@ -24,7 +24,6 @@ public class OpenAIModel
     public int? ResponseTokensPadding;
     public int? TokensPerMessage;
     public decimal? NameTokensMultiplier;
-    public int? TokensPerName;
 
     public static readonly Dictionary<OpenAIModelType, OpenAIModel> Models = new()
     {
@@ -40,7 +39,6 @@ public class OpenAIModel
                 ResponseTokensPadding = 3,
                 TokensPerMessage = 4,
                 NameTokensMultiplier = 1,
-                TokensPerName = 1,
             }
         },
         {
@@ -77,7 +75,6 @@ public class OpenAIModel
                 ResponseTokensPadding = 3,
                 TokensPerMessage = 4,
                 NameTokensMultiplier = 1,
-                TokensPerName = 1,
             }
         },
         {
@@ -92,7 +89,6 @@ public class OpenAIModel
                 ResponseTokensPadding = 3,
                 TokensPerMessage = 4,
                 NameTokensMultiplier = 1,
-                TokensPerName = 1,
             }
         },
         {
@@ -118,7 +114,6 @@ public class OpenAIModel
                 ResponseTokensPadding = 3,
                 TokensPerMessage = 4,
                 NameTokensMultiplier = 1,
-                TokensPerName = 1,
             }
         },
         {
@@ -133,7 +128,6 @@ public class OpenAIModel
                 ResponseTokensPadding = 3,
                 TokensPerMessage = 4,
                 NameTokensMultiplier = 1,
-                TokensPerName = 1,
             }
         },
     };
