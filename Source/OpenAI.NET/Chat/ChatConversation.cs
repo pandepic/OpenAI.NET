@@ -68,7 +68,7 @@ public class ChatConversation
     {
         var model = GetModel();
         var encoding = SharpToken.GptEncoding.GetEncodingForModel(model.ModelString);
-
+        
         var tokens = 0;
 
         foreach (var message in Messages)
@@ -80,12 +80,9 @@ public class ChatConversation
             {
                 if (model.NameTokensMultiplier.HasValue)
                 {
-                    var nameTokens = encoding.Encode(message.Name).Count;
+                    var nameTokens = encoding.Encode($":{message.Name}").Count;
                     tokens += (int)(nameTokens * model.NameTokensMultiplier.Value);
                 }
-
-                if (model.TokensPerName.HasValue)
-                    tokens += model.TokensPerName.Value;
             }
         }
 
