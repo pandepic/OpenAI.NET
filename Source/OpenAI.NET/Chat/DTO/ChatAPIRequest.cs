@@ -6,6 +6,7 @@ public enum ChatAPIRequestContentType
 {
     text,
     image_url,
+    json_object
 }
 
 public enum ChatAPIRequestImageContentDetailType
@@ -42,6 +43,12 @@ public abstract class ChatAPIRequestContent
     }
 }
 
+public class ChatAPIRequestResponseFormat : ChatAPIRequestContent
+{
+    public ChatAPIRequestResponseFormat(ChatAPIRequestContentType type) : base(type)
+    { }
+}
+
 public class ChatAPIRequestTextContent : ChatAPIRequestContent
 {
     public string text { get; set; }
@@ -67,6 +74,7 @@ public class ChatAPIRequest
 {
     public string model { get; set; }
     public List<BaseChatAPIRequestMessage> messages { get; set; }
+    public ChatAPIRequestResponseFormat? response_format { get; set; }
     public bool stream { get; set; }
     public float temperature { get; set; } = 0.5f; // 0 to 2
     public float top_p { get; set; } = 1f; // 0 to 1
