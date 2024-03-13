@@ -25,7 +25,7 @@ public class ChatConversation
     public int? TotalOutputTokens { get; set; }
     public int? TotalTokens { get; set; }
     public decimal TotalEstimatedCost { get; set; }
-    
+
     public float Temperature { get; protected set; } = 1f;
     public float TopP { get; protected set; } = 1f;
 
@@ -68,7 +68,7 @@ public class ChatConversation
     {
         var model = GetModel();
         var encoding = SharpToken.GptEncoding.GetEncodingForModel(model.ModelString);
-        
+
         var tokens = 0;
 
         foreach (var message in Messages)
@@ -89,12 +89,13 @@ public class ChatConversation
         return tokens;
     }
 
-    public ChatAPIRequest CreateAPIRequest(int? maxTokens = null)
+    public ChatAPIRequest CreateAPIRequest(int? maxTokens = null, ChatAPIRequestContentType? responseFormatType = null)
     {
         var request = new ChatAPIRequest()
         {
             model = GetModel().ModelString,
             temperature = Temperature,
+            response_format = responseFormatType == null ? null : new ChatAPIRequestResponseFormat(responseFormatType.Value),
             top_p = TopP,
             max_tokens = maxTokens,
             messages = new(),
@@ -108,9 +109,10 @@ public class ChatConversation
 
     public async Task<(ChatMessage, ChatResponseUsage)> GetNextAssistantMessageAsync(
         int? maxTokens = null,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        ChatAPIRequestContentType? responseFormatType = null)
     {
-        var request = CreateAPIRequest(maxTokens);
+        var request = CreateAPIRequest(maxTokens, responseFormatType);
         var jsonFormatting = Formatting.None;
 
         ChatMessage message = null;
@@ -157,7 +159,7 @@ public class ChatConversation
 
                 TotalEstimatedCost += promptCost + responseCost;
                 TotalTokens = response.usage.total_tokens;
-                
+
                 usage = new ChatResponseUsage
                 {
                     PromptTokens = response.usage.prompt_tokens,
