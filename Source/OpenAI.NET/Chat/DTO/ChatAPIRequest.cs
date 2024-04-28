@@ -62,10 +62,16 @@ public class ChatAPIRequestImageContent : ChatAPIRequestContent
     public ChatAPIRequestImageContent() : base(ChatAPIRequestContentType.image_url) { }
 }
 
+public class ChatAPIRequestResponseFormat
+{
+    public string type { get; set; }
+}
+
 //https://platform.openai.com/docs/api-reference/chat/create
 public class ChatAPIRequest
 {
     public string model { get; set; }
+    public ChatAPIRequestResponseFormat? response_format { get; set; }
     public List<BaseChatAPIRequestMessage> messages { get; set; }
     public bool stream { get; set; }
     public float temperature { get; set; } = 0.5f; // 0 to 2

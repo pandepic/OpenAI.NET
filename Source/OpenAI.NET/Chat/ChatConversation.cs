@@ -7,6 +7,12 @@ using OpenAINET.Chat.DTO;
 
 namespace OpenAINET.Chat;
 
+public enum ChatMessageResponseFormat
+{
+    Text,
+    JSON,
+}
+
 public class ChatResponseUsage
 {
     public int PromptTokens { get; set; }
@@ -36,6 +42,16 @@ public class ChatConversation
 
         if (!ChatAPI.SupportedModels.Contains(modelType))
             throw new ArgumentException($"{modelType} is not supported by the Chat API", nameof(modelType));
+    }
+
+    public string ResponseFormatToString(ChatMessageResponseFormat responseFormat)
+    {
+        return responseFormat switch
+        {
+            ChatMessageResponseFormat.Text => "text",
+            ChatMessageResponseFormat.JSON => "json_object",
+            _ => "text",
+        };
     }
 
     public void AddMessage(ChatMessage message)
@@ -108,10 +124,16 @@ public class ChatConversation
 
     public async Task<(ChatMessage, ChatResponseUsage)> GetNextAssistantMessageAsync(
         int? maxTokens = null,
-        TimeSpan? timeout = null)
+        TimeSpan? timeout = null,
+        ChatMessageResponseFormat responseFormat = ChatMessageResponseFormat.Text)
     {
         var request = CreateAPIRequest(maxTokens);
         var jsonFormatting = Formatting.None;
+
+        request.response_format = new()
+        {
+            type = ResponseFormatToString(responseFormat)
+        };
 
         ChatMessage message = null;
         ChatResponseUsage usage = null;
